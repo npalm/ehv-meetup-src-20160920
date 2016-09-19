@@ -1,0 +1,13 @@
+stages:
+  - build
+
+myjob:
+  stage: build
+
+  image: cowsay
+
+  script:
+    - cowsay  -f ghostbusters building  "$CI_BUILD_NAME" @ stage "$CI_BUILD_STAGE"
+
+  tags:
+    - docker

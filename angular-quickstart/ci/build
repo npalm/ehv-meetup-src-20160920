@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -e
+
+npm set registry http://npm-registry.docker
+npm install
+./node_modules/.bin/typings install
+npm run lint
+xvfb-run npm run test-once
+xvfb-run npm run e2e

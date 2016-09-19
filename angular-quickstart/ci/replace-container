@@ -1,0 +1,34 @@
+#!/bin/bash
+
+CONTAINER=$1
+IMAGE=$2
+
+stopContainer() {
+  echo "Stopping container $1"
+  docker stop $1
+}
+
+removeContainer() {
+  echo "Removing container $1"
+  docker rm -v $1
+}
+
+startContainer() {
+  echo "Creating and starting container $1 from image $2"
+  docker run -d --name $1 -p 3000:3000 $2
+}
+
+RUNNING=$(docker inspect --format="{{ .State.Running }}" $CONTAINER 2> /dev/null)
+
+if [ "$RUNNING" == "false" ]; then
+  echo "$CONTAINER is not running."
+  removeContainer $CONTAINER
+elif [ "$RUNNING" == "true" ]; then
+  echo "$CONTAINER is running."
+  stopContainer $CONTAINER
+  removeContainer $CONTAINER
+else
+ echo "$CONTAINER does not exist."
+fi
+
+startContainer $CONTAINER $IMAGE

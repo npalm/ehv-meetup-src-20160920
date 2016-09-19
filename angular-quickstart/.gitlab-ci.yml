@@ -1,0 +1,46 @@
+stages:
+  - build
+  - package
+  - deploy
+
+cache:
+  key: "$CI_BUILD_REPO"
+  paths:
+  - node_modules/
+
+build:
+  stage: build
+
+  image: npalm/ehv-meetup-ci:20160920
+
+  script:
+    - ci/build
+
+  artifacts:
+    paths:
+      - _test-output
+
+  tags:
+    - docker
+
+package:
+  stage: package
+
+  image: gitlab/dind
+
+  script:
+    - docker build -t quickstart .
+
+  tags:
+    - docker
+
+deploy:
+  stage: deploy
+
+  image: gitlab/dind
+
+  script:
+    - ./ci/replace-container quickstart quickstart
+
+  tags:
+    - docker
